@@ -21,8 +21,8 @@ class CrearBase:
         print(f"[OK] Base de datos {nombre_bd} creada y lista para uso.")
 
 
-class importa:
-    def importar_datos(csv_file: str, nombre_bd: str = "estudiantes.db") -> None:
+class Insertar:
+    def insetar_datos(csv_file: str, nombre_bd: str = "estudiantes.db") -> None:
         """
         Lee los datos de un archivo CSV e inserta los registros en la base de datos.
         :param csv_file: ruta del archivo CSV de entrada.
@@ -46,6 +46,14 @@ class importa:
         conn.close()
         print("[OK] Registros importados correctamente.")
 
+class listar:
+    def listar_estudiantes(nombre_bd="estudiantes.db"):
+        conn = sqlite3.connect(nombre_bd)
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM estudiantes")
+        datos = cur.fetchall()
+        conn.close()
+        return datos
         
 class consultar:
     def consultar_estudiantes(umbral: float = 4.0, nombre_bd: str = "estudiantes.db") -> None:
@@ -65,4 +73,19 @@ class consultar:
         for nombre, nota in resultados:
             print(f"{nombre:10s} | {nota:.2f}")
 
+        conn.close()
+class Actualizar:
+    def actualizar_nota(nombre, nueva_nota, nombre_bd="estudiantes.db"):
+        conn = sqlite3.connect(nombre_bd)
+        cur = conn.cursor()
+        cur.execute("UPDATE estudiantes SET nota=? WHERE nombre=?", (nueva_nota, nombre))
+        conn.commit()
+        conn.close()
+
+class Eliminar:
+    def eliminar_estudiante(nombre, nombre_bd="estudiantes.db"):
+        conn = sqlite3.connect(nombre_bd)
+        cur = conn.cursor()
+        cur.execute("DELETE FROM estudiantes WHERE nombre=?", (nombre,))
+        conn.commit()
         conn.close()
