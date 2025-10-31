@@ -11,8 +11,8 @@ no se diferencia lo suficiente de estudiante, podriamos plantiar las clases de o
 forma.
 Teniamos un error persistente en el que era como que main no encontraba a gestor o
 estudiantes, es por ello si se fija, cambiamos poco el orden poniendo todo en vista,
-gracia a ello se arreglo el error.
-
+gracia a ello se arreglo el error, no obstante la organizacion no era la mejor así que
+se mejoro el formato de las carpetas para arreglarlo.
 """
 
 from controlador.gestor import (
