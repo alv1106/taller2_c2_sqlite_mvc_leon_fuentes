@@ -22,29 +22,13 @@ class CrearBase:
 
 
 class Insertar:
-    def insetar_datos(csv_file: str, nombre_bd: str = "estudiantes.db") -> None:
-        """
-        Lee los datos de un archivo CSV e inserta los registros en la base de datos.
-        :param csv_file: ruta del archivo CSV de entrada.
-        :param nombre_bd: nombre del archivo de base de datos.
-        """
+    def insertar_estudiante(nombre, correo, nota, nombre_bd="estudiantes.db"):
+        """Inserta un nuevo registro en la tabla estudiantes."""
         conn = sqlite3.connect(nombre_bd)
         cur = conn.cursor()
-
-        with open(csv_file, newline='', encoding='utf-8') as f:
-            lector = csv.DictReader(f)
-            for fila in lector:
-                try:
-                    cur.execute(
-                        "INSERT INTO estudiantes (nombre, correo, nota) VALUES (?, ?, ?)",
-                        (fila['nombre'], fila['correo'], float(fila['nota']))
-                    )
-                except sqlite3.IntegrityError:
-                    print(f"[ADVERTENCIA] Registro duplicado: {fila['correo']}")
-
+        cur.execute("INSERT INTO estudiantes (nombre, correo, nota) VALUES (?, ?, ?)", (nombre, correo, nota))
         conn.commit()
         conn.close()
-        print("[OK] Registros importados correctamente.")
 
 class listar:
     def listar_estudiantes(nombre_bd="estudiantes.db"):
@@ -89,3 +73,52 @@ class Eliminar:
         cur.execute("DELETE FROM estudiantes WHERE nombre=?", (nombre,))
         conn.commit()
         conn.close()
+
+class Buscar:
+    def buscar_por_nombre(cadena, nombre_bd="estudiantes.db"):
+        """Busca coincidencias parciales en el nombre (LIKE)."""
+        conn = sqlite3.connect(nombre_bd)
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM estudiantes WHERE nombre LIKE ?", ('%' + cadena + '%',))
+        datos = cur.fetchall()
+        conn.close()
+        return datos
+    
+class PromedioBajo:
+    def eliminar_bajo_promedio(nombre_bd="estudiantes.db"):
+        """
+        Elimina todos los registros cuya nota sea menor a 3.0.
+        SQL: DELETE FROM estudiantes WHERE nota < 3.0
+        """
+        conn = sqlite3.connect(nombre_bd)
+        cur = conn.cursor()
+        cur.execute("DELETE FROM estudiantes WHERE nota < 3.0")
+        conn.commit()
+        conn.close()
+        print("[OK] Registros con nota menor a 3.0 eliminados.")
+
+class PromedioAlto:
+    def eliminar_bajo_promedio(nombre_bd="estudiantes.db"):
+        """
+        Elimina todos los registros cuya nota sea menor a 3.0.
+        SQL: DELETE FROM estudiantes WHERE nota < 3.0
+        """
+        conn = sqlite3.connect(nombre_bd)
+        cur = conn.cursor()
+        cur.execute("DELETE FROM estudiantes WHERE nota > 3.0")
+        conn.commit()
+        conn.close()
+        print("[OK] Registros con nota mayor a 3.0 eliminados.")
+
+class JerarquiaNotas:
+    def ordenar_por_nota(nombre_bd="estudiantes.db"):
+        """
+        Devuelve los estudiantes ordenados por nota descendente.
+        SQL: SELECT * FROM estudiantes ORDER BY nota DESC
+        """
+        conn = sqlite3.connect(nombre_bd)
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM estudiantes ORDER BY nota DESC")
+        datos = cur.fetchall()
+        conn.close()
+        return datos
